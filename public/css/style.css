@@ -58,9 +58,15 @@ p, b {
     border: none;
 }
 #codeinput {
+<<<<<<< HEAD
     margin: 5% auto 0px;
     padding: 15px;
     width: 96%;
+=======
+    margin: 20% auto 0px;
+    padding: 15px;
+    width: 600px;
+>>>>>>> f8fe72254d31e998bdd0cdf2f441273e8a859228
     text-align: center;
     box-shadow: 15px #000000; 
     background-color: #b4b6b8;
@@ -73,6 +79,21 @@ p, b {
     -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
 }
+<<<<<<< HEAD
 #codeinput p {
     margin-bottom: 10px;
 }
+=======
+#inputbox {
+    background-color: #ffffff;
+    width: 500px;
+    padding: 2px 10px 2px 10px;
+    color: #000000;
+    font-size: 12px;
+    text-align: center;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border-color: #ffffff;
+}
+>>>>>>> f8fe72254d31e998bdd0cdf2f441273e8a859228

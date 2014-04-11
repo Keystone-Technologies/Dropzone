@@ -19,7 +19,11 @@
             <div id="Content">
                 <div id="codeinput">
                     <p>Your upload session is: <%= session 'uuid' %></p>
+<<<<<<< HEAD
                     <form action="/file-upload" class="dropzone" id="my-awesome-dropzone"></form>
+=======
+                         <form action="/file-upload" class="dropzone" id="my-awesome-dropzone"></form>
+>>>>>>> f8fe72254d31e998bdd0cdf2f441273e8a859228
                 </div>
             </div><!-- End Content -->
         </div><!-- End Wrapper -->
