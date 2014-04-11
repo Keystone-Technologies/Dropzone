@@ -1,0 +1,78 @@
+/* 
+    Created on : April 22, 2014, 2:52:38 PM
+    Author     : Caleb Albers
+*/
+
+body, div, h1, h2, h3, h4, p, ul, ol, li, dl, dt, dd, img, form, fieldset, blockquote {
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+}
+body {
+  
+    background-color: #c6c8ca; 
+   //background-image: url(images/fallback-gradient.png); 
+   position:relative;
+   top:0;
+   bottom:0;
+   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#c6c8ca));
+   background-image: -webkit-linear-gradient(top, #ffffff, #c6c8ca); 
+   background-image:    -moz-linear-gradient(top, #ffffff, #c6c8ca);
+   background-image:     -ms-linear-gradient(top, #ffffff, #c6c8ca);
+   background-image:      -o-linear-gradient(top, #ffffff, #c6c8ca);
+   background-repeat: no-repeat;
+   background-size: 100%;
+    
+}
+ div, li,  h1, h2, h3, h4, td, input, select, textarea {
+    font-family: Arial;
+    font-size: 38px;
+    color: #6c9c31;
+}
+p, b {
+    font-family: Arial;
+    font-size: 16px;
+    color: #ffffff;
+}
+#wrapper {
+    width: 65%;
+    min-width: 600px;
+    margin: 0 auto;
+    align: center;
+}
+#header {
+    padding-top: 10%;
+}
+#logo {
+    float: left;
+}
+#title {
+    padding-top: 60px;
+    text-align: right;
+    float: right;
+}
+#seperator {
+    margin-top: 115px;
+    height: 4px;
+    background-color: #a6a8ab;
+    border: none;
+}
+#codeinput {
+    margin: 5% auto 0px;
+    padding: 15px;
+    width: 96%;
+    text-align: center;
+    box-shadow: 15px #000000; 
+    background-color: #b4b6b8;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    border: 2px solid #999;
+    border: inset 1px solid #333;
+    -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+}
+#codeinput p {
+    margin-bottom: 10px;
+}
