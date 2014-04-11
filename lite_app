@@ -1,0 +1,38 @@
+use Mojolicious::Lite;
+
+use Mojo::Util 'spurt';
+use File::Path;
+
+use UUID::Tiny ':std';
+
+hook before_routes => sub {
+  my $c = shift;
+  $c->app->log->debug($c->req->url->to_abs->host);
+};
+
+get '/' => sub {
+  my $self = shift;
+  $self->session->{uuid} = uuid_to_string(create_uuid(UUID_V4));
+} => 'index';
+
+post '/file-upload' => sub {
+  my $self = shift;
+
+  # Check file size
+  return $self->render(text => 'File is too big.', status => 200)
+    if $self->req->is_limit_exceeded;
+
+  # Process uploaded file
+  return $self->redirect_to('index')
+    unless my $file = $self->param('file');
+  my $size = $file->size;
+  my $name = $file->filename;
+  my $uuid = $self->session->{uuid};
+  my $home = $self->app->home->to_string;
+  mkpath "$home/uploads/$uuid";
+  $file->move_to("$home/uploads/$uuid/$name");
+  $self->app->log->debug("Thanks for uploading $size byte file $name to $home/uploads/$uuid/$name.");
+  $self->render(text => "Thanks for uploading $size byte file $name.");
+};
+
+app->start;

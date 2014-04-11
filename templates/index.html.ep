@@ -1,0 +1,12 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="/css/dropzone.css" />
+    <script src="/js/dropzone.js"></script>
+  </head>
+  <body>
+    Your upload session is: <%= session 'uuid' %><br />
+    <form action="/file-upload"
+      class="dropzone"
+      id="my-awesome-dropzone"></form>
+  </body>
+</html>
