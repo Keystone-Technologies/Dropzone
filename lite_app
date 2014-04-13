@@ -1,6 +1,6 @@
 use Mojolicious::Lite;
 
-use Mojo::Util 'spurt';
+use File::Spec::Functions qw(catdir catfile splitdir);
 use File::Path;
 
 use UUID::Tiny ':std';
@@ -29,10 +29,19 @@ post '/file-upload' => sub {
   my $name = $file->filename;
   my $uuid = $self->session->{uuid};
   my $home = $self->app->home->to_string;
-  mkpath "$home/uploads/$uuid";
-  $file->move_to("$home/uploads/$uuid/$name");
-  $self->app->log->debug("Thanks for uploading $size byte file $name to $home/uploads/$uuid/$name.");
+  mkpath "$home/public/uploads/$uuid";
+  $file->move_to("$home/public/uploads/$uuid/$name");
+  $self->app->log->debug("$home/public/uploads/$uuid/$name ($size)");
   $self->render(text => "Thanks for uploading $size byte file $name.");
 };
+
+get '/:uuid' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
+  my $self = shift;
+  my $home = $self->app->home->to_string;
+  return $self->render_not_found unless -d (my $path = catdir "$home/public/uploads", $self->param('uuid'));
+  $self->app->log->debug("Viewing $path");
+  opendir(my $dir, $path);
+  $self->stash(files => [grep { -f "$path/$_" } readdir $dir]);
+} => 'session-index';
 
 app->start;
