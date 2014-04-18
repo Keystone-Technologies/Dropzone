@@ -8,6 +8,7 @@ use UUID::Tiny ':std';
 hook before_routes => sub {
   my $c = shift;
   my $domain = $c->req->url->to_abs->host;
+  $c->app->stash(domain => $domain);
   my $domain_root = $c->app->home."/branded/$domain";
   if ( -d $domain_root ) {
     my $renderer = Mojolicious::Renderer->new;
