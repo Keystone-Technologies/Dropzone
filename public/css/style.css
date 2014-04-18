@@ -86,11 +86,8 @@ a {
 a:hover {
     color: #000;
 }
-#span {
-    font-size: 22px;
-    font-weight: normal;
-    background-color: #313131;
-    width: 100;
+span {
+    font-size: 18px;
 }
 #codeinput p {
     margin-bottom: 10px;
