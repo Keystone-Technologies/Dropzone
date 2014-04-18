@@ -95,17 +95,21 @@ a:hover {
     width: 65%;
     height: 360px;
 }
-#file_list {
+#file_list_container {
     display: inline-block;
     width: 32%;
-    overflow-y: scroll;
-    background-color: #fff;
-    align: right;
-    height: 360px;
 }
-#file_list p {
+#file_list {
+    overflow-y: scroll;
+    background-color: #aeb0b2;
+    align: right;
+    height: 320px;
+}
+#file_list_container p {
     color: #000;
     font-weight: bold;
+    font-size: 28px;
+    padding: 5px 0;
 }
 .file_row {
     width: 100%;
