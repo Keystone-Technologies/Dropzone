@@ -110,15 +110,15 @@ a:hover {
     background-color: #aeb0b2;
     align: right;
     height: 320px;
+    border: 1px solid rgba(0,0,0,0.03);
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
 }
 #file_list_container p {
     color: #000;
     font-weight: bold;
     font-size: 28px;
     padding: 5px 0;
-    border: 1px solid rgba(0,0,0,0.03);
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
 }
 .file_row {
     width: 100%;
