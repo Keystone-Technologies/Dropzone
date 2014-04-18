@@ -15,7 +15,6 @@ body, div, h1, h2, h3, h4, p, ul, ol, li, dl, dt, dd, img, form, fieldset, block
     padding: 0px;
     border: 0px;
     font-family: 'Muli', sans-serif;
-    font-style: italic;
 }
 body {
   
@@ -131,6 +130,7 @@ a:hover {
     color: #313131;
     padding-left: 15px;
     margin-bottom: 10px;
+    font-style: italic;
 }
 .file_row a:hover {
     color: #6c9c31;
