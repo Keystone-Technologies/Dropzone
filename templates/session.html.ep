@@ -33,11 +33,11 @@
                             % foreach ( @$files ) {
                                <div class="file_row">
                                    <a href="/uploads/<%= session 'uuid' %>/<%= $_ %>"><%= $_ %></a>
+                                   <div class="clipboard-copy-div btn btn-mini" data-clipboard-text="<%= $domain %>/uploads/<%= session 'uuid' %>/<%= $_ %>" id="j_idt149:<%= $_ %>">Copy Link</div>
+                                   <script type="text/javascript">
+                                       startZclip('j_idt149:<%= $_ %>','/js/ZeroClipboard.swf', 'Copy Link', 'Link Copied');
+                                   </script>
                                </div>
-                               <div class="clipboard-copy-div btn btn-mini" data-clipboard-text="<%= $domain %>/uploads/<%= session 'uuid' %>/<%= $_ %>" id="j_idt149:<%= $_ %>">Copy Link</div>
-                               <script type="text/javascript">
-                                   startZclip('j_idt149:<%= $_ %>','/js/ZeroClipboard.swf', 'Copy Link', 'Link Copied');
-                               </script>
                             % }
                         </div>
                     </div>
