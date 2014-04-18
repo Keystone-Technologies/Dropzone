@@ -7,12 +7,18 @@ use UUID::Tiny ':std';
 
 hook before_routes => sub {
   my $c = shift;
-  $c->app->log->debug($c->req->url->to_abs->host);
+  my $domain = $c->req->url->to_abs->host;
+  my $domain_root = $c->app->home."/branded/$domain";
+  if ( -d $domain_root ) {
+    my $renderer = Mojolicious::Renderer->new;
+    unshift @{$c->app->static->paths}, "$domain_root/public" unless grep { $_ eq "$domain_root/public" } @{$c->app->static->paths};
+    unshift @{$c->app->renderer->paths}, "$domain_root/templates" unless grep { $_ eq "$domain_root/templates" } @{$c->app->renderer->paths};
+  }
 };
 
 get '/' => sub {
   my $self = shift;
-  $self->session->{uuid} = uuid_to_string(create_uuid(UUID_V4));
+  $self->redirect_to('session', uuid => $self->session->{uuid} || uuid_to_string(create_uuid(UUID_V4)));
 } => 'index';
 
 post '/file-upload' => sub {
@@ -37,11 +43,16 @@ post '/file-upload' => sub {
 
 get '/:uuid' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
   my $self = shift;
+  $self->session->{uuid} = $self->param('uuid');
   my $home = $self->app->home->to_string;
-  return $self->render_not_found unless -d (my $path = catdir "$home/public/uploads", $self->param('uuid'));
+  my $path = catdir "$home/public/uploads", $self->param('uuid');
   $self->app->log->debug("Viewing $path");
-  opendir(my $dir, $path);
-  $self->stash(files => [grep { -f "$path/$_" } readdir $dir]);
-} => 'session-index';
+  if ( -d $path ) {
+    opendir(my $dir, $path);
+    $self->stash(files => [grep { -f "$path/$_" } readdir $dir]);
+  } else {
+    $self->stash(files => []);
+  }
+} => 'session';
 
 app->start;
