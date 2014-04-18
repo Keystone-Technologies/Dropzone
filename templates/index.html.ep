@@ -20,17 +20,17 @@ rel="stylesheet"></link>
             </div><!-- End Header -->
             <div id="Content">
                 <div id="codeinput">
-                    <p>Your upload session is: <b><a href="/<%= session 'uuid' 
-
-%>"><%= session 'uuid' %></a></b></p>
-                    <div id="file_upload"><form action="/file-upload" 
-
-class="dropzone" id="my-awesome-dropzone"></form></div>
-		    <div id="file_list"><p>File list:</p>% foreach ( @$files ) { 
-
-<div class="file_row"><a href="/uploads/<%= param 'uuid' %>/<%= $_ %>"><%= $_ 
-
-%></a></div> % }</div>
+                    <p>Your upload session is: <b><a href="/<%= session 'uuid' %>"><%= session 'uuid' %></a></b></p>
+                    <div id="file_upload">
+                        <form action="/file-upload" class="dropzone" id="my-awesome-dropzone"></form>
+                    </div>
+		    <div id="file_list">
+		        <p>File list:</p>
+		        % foreach ( @$files ) { <div class="file_row"><a href="/uploads/<%= param 'uuid' %>/<%= $_ %>"><%= $_ %></a></div><div class="clipboard-copy-div btn btn-mini" data-clipboard-text="dropzone.dev.kit.cm/uploads/<%= param 'uuid' %>/<%= $_ %>" id="j_idt149:<%= param 'uuid' %>/<%= $_ %>">Copy</div>
+			<script type="text/javascript">
+			  startZclip('j_idt149:foo','/js/ZeroClipboard.swf', 'Copy', 'Copied');
+			</script></div> % }
+		    </div>
                 </div>
             </div><!-- End Content -->
         </div><!-- End Wrapper -->
