@@ -13,6 +13,19 @@
         <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
         <script src="/js/ZeroClipboard.js"></script>
         <script src="/js/ZeroClipboardClient.js"></script>
+        <script>
+            Dropzone.options.myAwesomeDropzone = {
+              init: function() { 
+                this.on("success", function(file) {
+                  console.log("Added ", file.fullPath);
+                  $.get("/<%= session 'uuid' %>", function(data){
+                    //console.log(data);
+                    $("#file_list").html(data);
+                  });
+                });
+              }
+            };
+        </script>
     </head>
     <body>
         <div id="wrapper">
@@ -29,7 +42,9 @@
                     </div>
                     <div id="file_list_container">
                         <p>Uploaded Files:</p>
-                        <!-- INSERT FILE LIST AJAX HERE -->
+                        <div id="file_list">
+                          %= include 'filelist'
+                        </div>
                     </div>
                 </div>
             </div><!-- End Content -->
