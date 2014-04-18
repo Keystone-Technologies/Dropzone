@@ -5,7 +5,9 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
         <link rel="shortcut icon" type="image/png" href="img/favicon.png"/>
-        <link media="screen" type="text/css" href="css/style.css" rel="stylesheet"></link>
+        <link media="screen" type="text/css" href="css/style.css" 
+
+rel="stylesheet"></link>
         <link rel="stylesheet" href="/css/dropzone.css" />
         <script src="/js/dropzone.js"></script>
     </head>
@@ -18,8 +20,17 @@
             </div><!-- End Header -->
             <div id="Content">
                 <div id="codeinput">
-                    <p>Your upload session is: <b><a href="/<%= session 'uuid' %>"><%= session 'uuid' %></a></b></p>
-                    <form action="/file-upload" class="dropzone" id="my-awesome-dropzone"></form>
+                    <p>Your upload session is: <b><a href="/<%= session 'uuid' 
+
+%>"><%= session 'uuid' %></a></b></p>
+                    <div id="file_upload"><form action="/file-upload" 
+
+class="dropzone" id="my-awesome-dropzone"></form></div>
+		    <div id="file_list"><p>File list:</p>% foreach ( @$files ) { 
+
+<div class="file_row"><a href="/uploads/<%= param 'uuid' %>/<%= $_ %>"><%= $_ 
+
+%></a></div> % }</div>
                 </div>
             </div><!-- End Content -->
         </div><!-- End Wrapper -->
