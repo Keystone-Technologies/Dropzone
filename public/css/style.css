@@ -1,6 +1,6 @@
-/* 
-    Created on : April 22, 2014, 2:52:38 PM
-    Author     : Caleb Albers
+/*
+Created on : April 22, 2014, 2:52:38 PM
+Author : Caleb Albers
 */
 
 body, div, h1, h2, h3, h4, p, ul, ol, li, dl, dt, dd, img, form, fieldset, blockquote {
@@ -10,21 +10,21 @@ body, div, h1, h2, h3, h4, p, ul, ol, li, dl, dt, dd, img, form, fieldset, block
 }
 body {
   
-    background-color: #c6c8ca; 
-   //background-image: url(images/fallback-gradient.png); 
+    background-color: #c6c8ca;
+   //background-image: url(images/fallback-gradient.png);
    position:relative;
    top:0;
    bottom:0;
    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#c6c8ca));
-   background-image: -webkit-linear-gradient(top, #ffffff, #c6c8ca); 
-   background-image:    -moz-linear-gradient(top, #ffffff, #c6c8ca);
-   background-image:     -ms-linear-gradient(top, #ffffff, #c6c8ca);
-   background-image:      -o-linear-gradient(top, #ffffff, #c6c8ca);
+   background-image: -webkit-linear-gradient(top, #ffffff, #c6c8ca);
+   background-image: -moz-linear-gradient(top, #ffffff, #c6c8ca);
+   background-image: -ms-linear-gradient(top, #ffffff, #c6c8ca);
+   background-image: -o-linear-gradient(top, #ffffff, #c6c8ca);
    background-repeat: no-repeat;
    background-size: 100%;
     
 }
- div, li,  h1, h2, h3, h4, td, input, select, textarea {
+ div, li, h1, h2, h3, h4, td, input, select, textarea {
     font-family: Arial;
     font-size: 38px;
     color: #6c9c31;
@@ -62,7 +62,7 @@ p, b {
     padding: 15px;
     width: 96%;
     text-align: center;
-    box-shadow: 15px #000000; 
+    box-shadow: 15px #000000;
     background-color: #b4b6b8;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
@@ -73,6 +73,50 @@ p, b {
     -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
 }
+a {
+    text-decoration: none;
+    color: #6c9c31;
+}
+a:hover {
+    color: #000;
+}
+#span {
+    font-size: 22px;
+    font-weight: normal;
+    background-color: #313131;
+    width: 100;
+}
 #codeinput p {
     margin-bottom: 10px;
+    height: auto;
+}
+#file_upload {
+    float: left;
+    width: 66%;
+    height: 360px;
+}
+#file_list {
+    float: right;
+    width: 33%;
+    overflow-y: scroll;
+    background-color: #fff;
+    align: right;
+    height: 360px;
+}
+#file_list p {
+    color: #000;
+    font-weight: bold;
+}
+.file_row {
+    width: 100%;
+    border-bottom: 1px dotted #313131;
+    text-align: left;
+}
+.file_row a {
+    font-size: 16px;
+    color: #313131;
+    padding-left: 15px;
+}
+.file_row a:hover {
+    color: #6c9c31;
 }
