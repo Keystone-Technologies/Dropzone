@@ -19,13 +19,14 @@
             <div id="Content">
                 <div id="codeinput">
                     <p>Your upload session is: <b><a href="/<%= session 'uuid' %>"><%= session 'uuid' %></a></b></p>
-                    <form action="/file-upload" class="dropzone" id="my-awesome-dropzone"></form>
+                    <div id="file_upload"><form action="/file-upload" class="dropzone" id="my-awesome-dropzone"></form></div>
+		    <div id="file_list"><p>File list:</p>
+                    % foreach ( @$files ) { 
+                        <div class="file_row"><a href="/uploads/<%= param 'uuid' %>/<%= $_ %>"><%= $_ %></a></div>
+                    % }
+                    </div>
                 </div>
             </div><!-- End Content -->
         </div><!-- End Wrapper -->
-    <hr />
-    % foreach ( @$files ) {
-        <a href="/uploads/<%= session 'uuid' %>/<%= $_ %>"><%= $_ %></a><br />
-    % }
     </body>
 </html>
