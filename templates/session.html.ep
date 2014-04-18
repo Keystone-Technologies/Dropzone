@@ -13,8 +13,6 @@
         <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
         <script src="/js/ZeroClipboard.js"></script>
         <script src="/js/ZeroClipboardClient.js"></script>
-        <link href='http://fonts.googleapis.com/css?family=Muli' rel='stylesheet' type='text/css'>
-        <style>body { font-family: 'Muli', sans-serif; }</style>
     </head>
     <body>
         <div id="wrapper">
