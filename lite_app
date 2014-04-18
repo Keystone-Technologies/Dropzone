@@ -5,10 +5,11 @@ use File::Path;
 
 use UUID::Tiny ':std';
 
+my $domain;
+
 hook before_routes => sub {
   my $c = shift;
-  my $domain = $c->req->url->to_abs->host;
-  $c->app->stash(domain => $domain);
+  $domain = $c->req->url->to_abs->host;
   my $domain_root = $c->app->home."/branded/$domain";
   if ( -d $domain_root ) {
     my $renderer = Mojolicious::Renderer->new;
@@ -47,7 +48,8 @@ get '/:uuid' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9
   $self->session->{uuid} = $self->param('uuid');
   my $home = $self->app->home->to_string;
   my $path = catdir "$home/public/uploads", $self->param('uuid');
-  $self->app->log->debug("Viewing $path");
+  $self->app->log->debug("Viewing $domain : $path");
+  $self->stash(domain => $domain);
   if ( -d $path ) {
     opendir(my $dir, $path);
     $self->stash(files => [grep { -f "$path/$_" } readdir $dir]);
