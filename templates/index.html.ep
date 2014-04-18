@@ -5,11 +5,14 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
         <link rel="shortcut icon" type="image/png" href="img/favicon.png"/>
-        <link media="screen" type="text/css" href="css/style.css" 
-
-rel="stylesheet"></link>
+	<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link media="screen" type="text/css" href="css/style.css" rel="stylesheet"></link>
         <link rel="stylesheet" href="/css/dropzone.css" />
         <script src="/js/dropzone.js"></script>
+        <script src="http://code.jquery.com/jquery.js"></script>
+	<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+	<script src="/js/ZeroClipboard.js"></script>
+	<script src="/js/ZeroClipboardClient.js"></script>
     </head>
     <body>
         <div id="wrapper">
