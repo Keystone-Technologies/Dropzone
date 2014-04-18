@@ -14,7 +14,7 @@
         <script src="/js/ZeroClipboard.js"></script>
         <script src="/js/ZeroClipboardClient.js"></script>
         <link href='http://fonts.googleapis.com/css?family=Muli' rel='stylesheet' type='text/css'>
-        <style>body{font-family: 'Muli', sans-serif;}</style>
+        <style>body { font-family: 'Muli', sans-serif; }</style>
     </head>
     <body>
         <div id="wrapper">
@@ -30,7 +30,7 @@
                         <form action="/file-upload" class="dropzone" id="my-awesome-dropzone"></form>
                     </div>
                     <div id="file_list_container">
-                        <p>File list:</p>
+                        <p>Uploaded Files:</p>
                         <div id="file_list">
                             % foreach ( @$files ) {
                                <div class="file_row">
