@@ -3,10 +3,18 @@ Created on : April 22, 2014, 2:52:38 PM
 Author : Caleb Albers
 */
 
+@font-face {
+  font-family: 'Muli';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Muli'), url(http://themes.googleusercontent.com/static/fonts/muli/v5/kU4XYdV4jtS72BIidPtqyw.woff) format('woff');
+}
+
 body, div, h1, h2, h3, h4, p, ul, ol, li, dl, dt, dd, img, form, fieldset, blockquote {
     margin: 0px;
     padding: 0px;
     border: 0px;
+    font-family: 'Muli', sans-serif;
 }
 body {
   
