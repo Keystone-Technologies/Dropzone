@@ -113,12 +113,12 @@ a:hover {
 }
 .file_row {
     width: 100%;
-    border-bottom: 1px dotted #313131;
+    border-bottom: 1px solid #313131;
     text-align: left;
     height: 38px;
 }
 .file_row a {
-    width: 90%
+    width: 80%
     display: inline;
     font-size: 16px;
     color: #313131;
@@ -131,6 +131,6 @@ a:hover {
 .btn {
     display: inline;
     float: right;
-    width: 10%;
+    width: 20%;
     margin: 8px 5px 0;
 }
