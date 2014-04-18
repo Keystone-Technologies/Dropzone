@@ -32,9 +32,9 @@
                         <div id="file_list">
                             % foreach ( @$files ) {
                                <div class="file_row">
-                                   <a href="/uploads/<%= param 'uuid' %>/<%= $_ %>"><%= $_ %></a>
+                                   <a href="/uploads/<%= session 'uuid' %>/<%= $_ %>"><%= $_ %></a>
                                </div>
-                               <div class="clipboard-copy-div btn btn-mini" data-clipboard-text="dropzone.dev.kit.cm/uploads/<%= param 'uuid' %>/<%= $_ %>" id="j_idt149:<%= param 'uuid' %>/<%= $_ %>">Copy Link</div>
+                               <div class="clipboard-copy-div btn btn-mini" data-clipboard-text="dropzone.dev.kit.cm/uploads/<%= session 'uuid' %>/<%= $_ %>" id="j_idt149:<%= session 'uuid' %>/<%= $_ %>">Copy Link</div>
                                <script type="text/javascript">
                                    startZclip('j_idt149:foo','/js/ZeroClipboard.swf', 'Copy Link', 'Link Copied');
                                </script>
