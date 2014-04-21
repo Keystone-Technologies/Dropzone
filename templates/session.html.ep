@@ -43,7 +43,7 @@
             </div><!-- End Header -->
             <div id="Content">
                 <div id="codeinput">
-                    <p>Your upload session is: <b><a href="/<%= param 'uuid' %>"><%= param 'uuid' %></a></b></p>
+                    <p>Your upload session is: <b><a href="/<%= param 'uuid' %>"><%= param 'uuid' %></a></b> (<a href="<%= url_for 'new' %>">new</a>)</p>
                     <div id="file_upload">
                         <form action="/file-upload" class="dropzone" id="my-awesome-dropzone">
                             <input type="hidden" name="uuid" value="<%= param 'uuid' %>" />

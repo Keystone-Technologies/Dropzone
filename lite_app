@@ -23,6 +23,12 @@ get '/' => sub {
   $self->redirect_to('session', uuid => $self->session->{uuid} || uuid_to_string(create_uuid(UUID_V4)));
 } => 'index';
 
+get '/new' => sub {
+  my $self = shift;
+  delete $self->session->{uuid};
+  $self->redirect_to('session', uuid => uuid_to_string(create_uuid(UUID_V4)));
+};
+
 post '/file-upload' => sub {
   my $self = shift;
 
