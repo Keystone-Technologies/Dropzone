@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Keystone IT - File Upload</title>
+        <title><%= $name || 'Keystone IT - File Upload' %></title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
         <link rel="shortcut icon" type="image/png" href="img/favicon.png"/>
@@ -43,7 +43,7 @@
             </div><!-- End Header -->
             <div id="Content">
                 <div id="codeinput">
-                    <p>Your upload session is: <b><a href="/<%= param 'uuid' %>"><%= param 'uuid' %></a></b> (<a href="<%= url_for 'new' %>">new</a> | <a href="<%= url_for 'uuiddelete', uuid => param 'uuid' %>">delete</a>)</p>
+                    <p>Your upload session is: <b><a href="/<%= param 'uuid' %>"><%= $name || param 'uuid' %></a></b> (<a href="<%= url_for 'new' %>">new</a> | <a href="<%= url_for 'uuiddelete', uuid => param 'uuid' %>">delete</a>)</p>
                     <div id="file_upload">
                         <form action="<%= url_for 'upload', uuid => param 'uuid' %>" class="dropzone" id="my-awesome-dropzone"></form>
                     </div>

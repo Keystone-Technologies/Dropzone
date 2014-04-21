@@ -1,5 +1,7 @@
 use Mojolicious::Lite;
 
+use Mojo::Util 'slurp';
+
 use File::Spec::Functions qw(catdir catfile splitdir);
 use File::Path;
 
@@ -38,9 +40,9 @@ get '/:uuid' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9
   $self->app->log->debug("Viewing $domain : $path");
   if ( -d $path ) {
     opendir(my $dir, $path);
-    $self->stash(files => [grep { -f "$path/$_" } readdir $dir]);
+    $self->stash(files => [grep { !/^\.dz-/ && -f "$path/$_" } readdir $dir], name => -e "$path/.dz-name" ? slurp "$path/.dz-name" : '');
   } else {
-    $self->stash(files => []);
+    $self->stash(files => [], name => '');
   }
   return $self->render('filelist') if $self->req->is_xhr;
 } => 'session';
@@ -55,12 +57,26 @@ get '/:uuid/delete' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{
   $self->render(text => "You have removed the entire $uuid session repo.");
 };
 
+post '/:uuid/name' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
+  my $self = shift;
+  my $uuid = $self->param('uuid');
+  my $home = $self->app->home->to_string;
+  my $path = catdir "$home/public/uploads", $uuid;
+  spurt $self->param('name'), "$path/.dz-name" if -d $path;
+  $self->app->log->debug("Set name for $uuid");
+  $self->render(text => "You have named the $uuid session repo.");
+};
+
 post '/:uuid/upload' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
   my $self = shift;
 
   # Check file size
   return $self->render(text => 'File is too big.', status => 200)
     if $self->req->is_limit_exceeded;
+
+  # Check file name
+  return $self->render(text => 'File name cannot start with .dz-', status => 200)
+    if $file->filename =~ /^\.dz-/;
 
   # Process uploaded file
   return $self->redirect_to('index')
