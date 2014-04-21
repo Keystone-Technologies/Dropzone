@@ -25,6 +25,13 @@
                 });
               }
             };
+            $(function(){
+                setInterval(function(){
+                    $.get("/<%= param 'uuid' %>", function(data){
+                        $("#file_list").html(data);
+                    });
+                }, 3000);
+            });
         </script>
     </head>
     <body>
