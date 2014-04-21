@@ -52,9 +52,22 @@ get '/:uuid/delete' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{
   my $uuid = $self->param('uuid');
   my $home = $self->app->home->to_string;
   my $path = catdir "$home/public/uploads", $uuid;
-  # rm -rf "$home/public/uploads/$uuid" if -d $path;
+  # rm -rf $path if -d $path;
   $self->app->log->debug("Delete $path");
   $self->render(text => "You have removed the entire $uuid session repo.");
+};
+
+post '/:uuid/delete' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
+  my $self = shift;
+  my $uuid = $self->param('uuid');
+  my $home = $self->app->home->to_string;
+  my $path = catdir "$home/public/uploads", $uuid;
+  foreach ( @{$self->req->json} ) {
+    # Need to clean input of ../
+    # unlink "$path/$_" if -e $path;
+    $self->app->log->debug("Delete $path/$_");
+  }
+  $self->render(text => "You have removed files from $uuid session repo.");
 };
 
 post '/:uuid/name' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
