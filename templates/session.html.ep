@@ -18,7 +18,7 @@
               init: function() { 
                 this.on("success", function(file) {
                   console.log("Added ", file.fullPath);
-                  $.get("/<%= session 'uuid' %>", function(data){
+                  $.get("/<%= param 'uuid' %>", function(data){
                     //console.log(data);
                     $("#file_list").html(data);
                   });
@@ -36,9 +36,11 @@
             </div><!-- End Header -->
             <div id="Content">
                 <div id="codeinput">
-                    <p>Your upload session is: <b><a href="/<%= session 'uuid' %>"><%= session 'uuid' %></a></b></p>
+                    <p>Your upload session is: <b><a href="/<%= param 'uuid' %>"><%= param 'uuid' %></a></b></p>
                     <div id="file_upload">
-                        <form action="/file-upload" class="dropzone" id="my-awesome-dropzone"></form>
+                        <form action="/file-upload" class="dropzone" id="my-awesome-dropzone">
+                            <input type="hidden" name="uuid" value="<%= param 'uuid' %>" />
+                        </form>
                     </div>
                     <div id="file_list_container">
                         <p>Uploaded Files:</p>

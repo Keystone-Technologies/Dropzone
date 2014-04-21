@@ -35,7 +35,7 @@ post '/file-upload' => sub {
     unless my $file = $self->param('file');
   my $size = $file->size;
   my $name = $file->filename;
-  my $uuid = $self->session->{uuid};
+  my $uuid = $self->param('uuid');
   my $home = $self->app->home->to_string;
   mkpath "$home/public/uploads/$uuid";
   $file->move_to("$home/public/uploads/$uuid/$name");
@@ -45,7 +45,7 @@ post '/file-upload' => sub {
 
 get '/:uuid' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
   my $self = shift;
-  $self->session->{uuid} = $self->param('uuid');
+  $self->session->{uuid} ||= $self->param('uuid');
   my $home = $self->app->home->to_string;
   my $path = catdir "$home/public/uploads", $self->param('uuid');
   $self->stash(domain => $domain);
