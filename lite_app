@@ -29,7 +29,33 @@ get '/new' => sub {
   $self->redirect_to('session', uuid => uuid_to_string(create_uuid(UUID_V4)));
 };
 
-post '/file-upload' => sub {
+get '/:uuid' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
+  my $self = shift;
+  $self->session->{uuid} ||= $self->param('uuid');
+  my $home = $self->app->home->to_string;
+  my $path = catdir "$home/public/uploads", $self->param('uuid');
+  $self->stash(domain => $domain);
+  $self->app->log->debug("Viewing $domain : $path");
+  if ( -d $path ) {
+    opendir(my $dir, $path);
+    $self->stash(files => [grep { -f "$path/$_" } readdir $dir]);
+  } else {
+    $self->stash(files => []);
+  }
+  return $self->render('filelist') if $self->req->is_xhr;
+} => 'session';
+
+get '/:uuid/delete' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
+  my $self = shift;
+  my $uuid = $self->param('uuid');
+  my $home = $self->app->home->to_string;
+  my $path = catdir "$home/public/uploads", $uuid;
+  # rm -rf "$home/public/uploads/$uuid" if -d $path;
+  $self->app->log->debug("Delete $path");
+  $self->render(text => "You have removed the entire $uuid session repo.");
+};
+
+post '/file-upload' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
   my $self = shift;
 
   # Check file size
@@ -48,21 +74,5 @@ post '/file-upload' => sub {
   $self->app->log->debug("$home/public/uploads/$uuid/$name ($size)");
   $self->render(text => "Thanks for uploading $size byte file $name.");
 };
-
-get '/:uuid' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
-  my $self = shift;
-  $self->session->{uuid} ||= $self->param('uuid');
-  my $home = $self->app->home->to_string;
-  my $path = catdir "$home/public/uploads", $self->param('uuid');
-  $self->stash(domain => $domain);
-  $self->app->log->debug("Viewing $domain : $path");
-  if ( -d $path ) {
-    opendir(my $dir, $path);
-    $self->stash(files => [grep { -f "$path/$_" } readdir $dir]);
-  } else {
-    $self->stash(files => []);
-  }
-  return $self->render('filelist') if $self->req->is_xhr;
-} => 'session';
 
 app->start;
