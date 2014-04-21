@@ -55,7 +55,7 @@ get '/:uuid/delete' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{
   $self->render(text => "You have removed the entire $uuid session repo.");
 };
 
-post '/file-upload' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
+post '/:uuid/upload' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
   my $self = shift;
 
   # Check file size

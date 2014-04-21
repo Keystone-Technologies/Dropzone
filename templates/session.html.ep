@@ -45,9 +45,7 @@
                 <div id="codeinput">
                     <p>Your upload session is: <b><a href="/<%= param 'uuid' %>"><%= param 'uuid' %></a></b> (<a href="<%= url_for 'new' %>">new</a> | <a href="<%= url_for 'uuiddelete', uuid => param 'uuid' %>">delete</a>)</p>
                     <div id="file_upload">
-                        <form action="/file-upload" class="dropzone" id="my-awesome-dropzone">
-                            <input type="hidden" name="uuid" value="<%= param 'uuid' %>" />
-                        </form>
+                        <form action="<%= url_for 'upload', uuid => param 'uuid' %>" class="dropzone" id="my-awesome-dropzone"></form>
                     </div>
                     <div id="file_list_container">
                         <p>Uploaded Files:</p>
