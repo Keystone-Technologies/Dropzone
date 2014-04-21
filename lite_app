@@ -80,6 +80,18 @@ post '/:uuid/name' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4
   $self->render(text => "You have named the $uuid session repo.");
 };
 
+get '/:uuid/download/:ext' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/, ext => [qw/zip/]] => sub {
+  my $self = shift;
+  my $uuid = $self->param('uuid');
+  my $home = $self->app->home->to_string;
+  my $path = catdir "$home/public/uploads", $uuid;
+  if ( $self->param('ext') eq 'zip' ) {
+    #my $zip = zip $path;
+    #return $self->render_file($zip);
+  }
+  $self->render("Unknown file type");
+};
+
 post '/:uuid/upload' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
   my $self = shift;
 
