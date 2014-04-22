@@ -1,4 +1,0 @@
-File list:<br />
-% foreach ( @$files ) {
-  <a href="/uploads/<%= param 'uuid' %>/<%= $_ %>"><%= $_ %></a><br />
-% }
