@@ -18,7 +18,7 @@
               init: function() { 
                 this.on("success", function(file) {
                   console.log("Added ", file.fullPath);
-                  $.get("/<%= param 'uuid' %>", function(data){
+                  $.get("/<%= $uuid %>", function(data){
                     //console.log(data);
                     $("#file_list").html(data);
                   });
@@ -27,7 +27,7 @@
             };
             $(function(){
                 setInterval(function(){
-                    $.get("/<%= param 'uuid' %>", function(data){
+                    $.get("/<%= $uuid %>", function(data){
                         $("#file_list").html(data);
                     });
                 }, 3000);
@@ -43,9 +43,9 @@
             </div><!-- End Header -->
             <div id="Content">
                 <div id="codeinput">
-                    <p>Your upload session is: <b><a href="/<%= param 'uuid' %>"><%= $name || param 'uuid' %></a></b> (<a href="<%= url_for 'new' %>">new</a> | <a href="<%= url_for 'uuiddelete', uuid => param 'uuid' %>">delete</a>)</p>
+                    <p>Your upload session is: <b><a href="/<%= $uuid %>"><%= $name || $uuid %></a></b> (<a href="<%= url_for 'new' %>">new</a> | <a href="<%= url_for 'uuiddelete', uuid => $uuid %>">delete</a>)</p>
                     <div id="file_upload">
-                        <form action="<%= url_for 'upload', uuid => param 'uuid' %>" class="dropzone" id="my-awesome-dropzone"></form>
+                        <form action="<%= url_for 'upload', uuid => $uuid %>" class="dropzone" id="my-awesome-dropzone"></form>
                     </div>
                     <div id="file_list_container">
                         <p>Uploaded Files:</p>

@@ -1,43 +1,62 @@
 use Mojolicious::Lite;
 
+use FindBin;
+BEGIN { unshift @INC, "$FindBin::Bin/lib" }
+
 use Mojo::Util qw/slurp spurt/;
 
 use File::Spec::Functions qw(catdir catfile splitdir);
 use File::Path;
 
 use UUID::Tiny ':std';
+use List::Util qw(first);
 
-my $domain;
+my $host;
 
 hook before_routes => sub {
   my $c = shift;
-  $domain = $c->req->url->to_abs->host;
-  my $domain_root = $c->app->home."/branded/$domain";
-  if ( -d $domain_root ) {
-    my $renderer = Mojolicious::Renderer->new;
-    unshift @{$c->app->static->paths}, "$domain_root/public" unless grep { $_ eq "$domain_root/public" } @{$c->app->static->paths};
-    unshift @{$c->app->renderer->paths}, "$domain_root/templates" unless grep { $_ eq "$domain_root/templates" } @{$c->app->renderer->paths};
+  $host = $c->req->url->to_abs->host;
+  my $host_root = $c->app->home."/branded/$host";
+  if ( -d $host_root ) {
+    unshift @{$c->app->static->paths}, "$host_root/public" unless grep { $_ eq "$host_root/public" } @{$c->app->static->paths};
+    unshift @{$c->app->renderer->paths}, "$host_root/templates" unless grep { $_ eq "$host_root/templates" } @{$c->app->renderer->paths};
   }
 };
 
-get '/' => sub {
-  my $self = shift;
-  $self->redirect_to('session', uuid => $self->session->{uuid} || uuid_to_string(create_uuid(UUID_V4)));
-} => 'index';
+helper uuid => sub { uuid_to_string(create_uuid(UUID_V4)) };
 
-get '/new' => sub {
+helper session_manager => sub {
   my $self = shift;
-  delete $self->session->{uuid};
-  $self->redirect_to('session', uuid => uuid_to_string(create_uuid(UUID_V4)));
+  local $_ = shift;
+  $self->session->{uuid} = [$self->session->{uuid}] if ! ref $self->session->{uuid};
+  if ( /^[0-9]+$/ ) {
+    if ( $self->session->{uuid}->[$_] ) {
+      return $self->session->{uuid}->[$_];
+    } elsif ( $_ == 0 ) {
+      push @{$self->session->{uuid}}, $self->uuid;
+      return $self->session->{uuid}->[-1];
+    } else {
+      die "Not found"
+    }
+  } elsif ( /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/ ) {
+    my $uuid = $_;
+    if ( grep { $uuid eq $_ } @{$self->session->{uuid}} ) {
+      return first { $self->session->{uuid}->[$_] eq $uuid } 0 .. $#{$self->session->{uuid}};
+    } else {
+      push @{$self->session->{uuid}}, $uuid;
+      return $#{$self->session->{uuid}};
+    }
+  }
 };
 
-get '/:uuid' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
+get '/:index' => [index => qr/[0-9]+/] => {index => 0} => sub {
   my $self = shift;
-  $self->session->{uuid} ||= $self->param('uuid');
+  $self->app->log->debug($self->param('index').' => '.$self->session_manager($self->param('index')));
+  my $uuid = $self->session_manager($self->param('index'));
   my $home = $self->app->home->to_string;
-  my $path = catdir "$home/public/uploads", $self->param('uuid');
-  $self->stash(domain => $domain);
-  $self->app->log->debug("Viewing $domain : $path");
+  my $path = catdir $home, 'public', 'uploads', $uuid;
+  $self->stash(host => $host, uuid => $uuid);
+  $self->app->log->debug("Viewing $host : $path");
   if ( -d $path ) {
     opendir(my $dir, $path);
     $self->stash(files => [grep { !/^\.dz-/ && -f "$path/$_" } readdir $dir], name => -e "$path/.dz-name" ? slurp "$path/.dz-name" : '');
@@ -46,6 +65,17 @@ get '/:uuid' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9
   }
   return $self->render('filelist') if $self->req->is_xhr;
 } => 'session';
+
+get '/new' => sub {
+  my $self = shift;
+  $self->redirect_to('uuid', uuid => $self->uuid);
+};
+
+get '/:uuid' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
+  my $self = shift;
+  $self->app->log->debug($self->param('uuid').' => '.$self->session_manager($self->param('uuid')));
+  $self->redirect_to('session', index => $self->session_manager($self->param('uuid')));
+};
 
 get '/:uuid/delete' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
   my $self = shift;

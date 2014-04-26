@@ -1,8 +1,8 @@
   % my $cnt = 0;
   % foreach ( @$files ) {
     <div class="file_row">
-      <a href="/uploads/<%= param 'uuid' %>/<%= $_ %>"><%= $_ %></a>
-    <div class="clipboard-copy-div btn btn-mini" data-clipboard-text="http://<%= $domain %>/uploads/<%= param 'uuid' %>/<%= $_ %>" id="j_idt149:<%= $cnt %>">Copy Link</div>
+      <a href="/uploads/<%= $uuid %>/<%= $_ %>"><%= $_ %></a>
+    <div class="clipboard-copy-div btn btn-mini" data-clipboard-text="http://<%= $host %>/uploads/<%= $uuid %>/<%= $_ %>" id="j_idt149:<%= $cnt %>">Copy Link</div>
       <script type="text/javascript">
         startZclip('j_idt149:<%= $cnt %>','/js/ZeroClipboard.swf', 'Copy Link', 'Copy Link');
       </script>
