@@ -43,7 +43,7 @@
             </div><!-- End Header -->
             <div id="Content">
                 <div id="codeinput">
-                    <p>Your upload session is: <b><a href="/<%= $uuid %>"><%= $name || $uuid %></a></b> (<a href="<%= url_for 'new' %>">new</a> | <a href="<%= url_for 'uuiddelete', uuid => $uuid %>">delete</a>)</p>
+                    <p>Your upload session is: <b><a href="/<%= $uuid %>"><%= $name || $uuid %></a></b> (<a href="<%= url_for 'new' %>">new</a>)</p>
                     <div id="file_upload">
                         <form action="<%= url_for 'upload', uuid => $uuid %>" class="dropzone" id="my-awesome-dropzone"></form>
                     </div>
@@ -53,6 +53,9 @@
                           %= include 'filelist'
                         </div>
                     </div>
+                    % if ( stash 'mine' ) {
+                      <p><a href="<%= url_for 'uuiddelete', uuid => $uuid %>">delete</a></p>
+                    % }
                 </div>
             </div><!-- End Content -->
         </div><!-- End Wrapper -->

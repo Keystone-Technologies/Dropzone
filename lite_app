@@ -7,11 +7,15 @@ use Mojo::Util qw/slurp spurt/;
 
 use File::Spec::Functions qw(catdir catfile splitdir);
 use File::Path;
-
-use UUID::Tiny ':std';
 use List::Util qw(first);
 
+use DZ;
+
 my $host;
+
+plugin 'RemoteAddr';
+
+helper dz => sub { DZ->new({app => shift}) };
 
 hook before_routes => sub {
   my $c = shift;
@@ -23,100 +27,54 @@ hook before_routes => sub {
   }
 };
 
-helper uuid => sub { uuid_to_string(create_uuid(UUID_V4)) };
-
-helper session_manager => sub {
+get '/:uuid' => [uuid => qr/[0-9]+|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => {uuid => 0} => sub {
   my $self = shift;
-  local $_ = shift;
-  $self->session->{uuid} = [$self->session->{uuid}] if ! ref $self->session->{uuid};
-  if ( /^[0-9]+$/ ) {
-    if ( $self->session->{uuid}->[$_] ) {
-      return $self->session->{uuid}->[$_];
-    } elsif ( $_ == 0 ) {
-      push @{$self->session->{uuid}}, $self->uuid;
-      return $self->session->{uuid}->[-1];
-    } else {
-      die "Not found"
-    }
-  } elsif ( /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/ ) {
-    my $uuid = $_;
-    if ( grep { $uuid eq $_ } @{$self->session->{uuid}} ) {
-      return first { $self->session->{uuid}->[$_] eq $uuid } 0 .. $#{$self->session->{uuid}};
-    } else {
-      push @{$self->session->{uuid}}, $uuid;
-      return $#{$self->session->{uuid}};
-    }
-  }
-};
-
-get '/:index' => [index => qr/[0-9]+/] => {index => 0} => sub {
-  my $self = shift;
-  $self->app->log->debug($self->param('index').' => '.$self->session_manager($self->param('index')));
-  my $uuid = $self->session_manager($self->param('index'));
-  my $home = $self->app->home->to_string;
-  my $path = catdir $home, 'public', 'uploads', $uuid;
-  $self->stash(host => $host, uuid => $uuid);
+  $self->stash(host => $host, uuid => $self->dz->uuid, files => [], name => '');
+  my $path = $self->dz->path or die "Path error";
   $self->app->log->debug("Viewing $host : $path");
   if ( -d $path ) {
     opendir(my $dir, $path);
-    $self->stash(files => [grep { !/^\.dz-/ && -f "$path/$_" } readdir $dir], name => -e "$path/.dz-name" ? slurp "$path/.dz-name" : '');
-  } else {
-    $self->stash(files => [], name => '');
+    $self->stash(files => [grep { !/^\.dz-/ && -f $self->dz->file($_) } readdir $dir], name => $self->dz->repo->name);
   }
   return $self->render('filelist') if $self->req->is_xhr;
 } => 'session';
 
 get '/new' => sub {
   my $self = shift;
-  $self->redirect_to('uuid', uuid => $self->uuid);
-};
-
-get '/:uuid' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
-  my $self = shift;
-  $self->app->log->debug($self->param('uuid').' => '.$self->session_manager($self->param('uuid')));
-  $self->redirect_to('session', index => $self->session_manager($self->param('uuid')));
+  $self->redirect_to('session', uuid => $self->dz->new_uuid);
 };
 
 get '/:uuid/delete' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
   my $self = shift;
-  my $uuid = $self->param('uuid');
-  my $home = $self->app->home->to_string;
-  my $path = catdir "$home/public/uploads", $uuid;
+  my $path = $self->dz->path;
   # rm -rf $path if -d $path;
   $self->app->log->debug("Delete $path");
-  $self->render(text => "You have removed the entire $uuid session repo.");
+  $self->render(text => "Done.");
 };
 
 post '/:uuid/delete' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
   my $self = shift;
-  my $uuid = $self->param('uuid');
-  my $home = $self->app->home->to_string;
-  my $path = catdir "$home/public/uploads", $uuid;
+  my $path = $self->dz->path;
   foreach ( @{$self->req->json} ) {
+    my $file = $self->dz->file($_);
     # Need to clean input of ../
-    # unlink "$path/$_" if -e $path;
-    $self->app->log->debug("Delete $path/$_");
+    # unlink $file if -e $file;
+    $self->app->log->debug("Delete $file");
   }
-  $self->render(text => "You have removed files from $uuid session repo.");
+  $self->render(text => "Done.");
 };
 
 post '/:uuid/name' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
   my $self = shift;
-  my $uuid = $self->param('uuid');
-  my $home = $self->app->home->to_string;
-  my $path = catdir "$home/public/uploads", $uuid;
-  spurt $self->param('name'), "$path/.dz-name" if -d $path;
-  $self->app->log->debug("Set name for $uuid");
-  $self->render(text => "You have named the $uuid session repo.");
+  my $name = $self->dz->name($self->param('name'));
+  $self->app->log->debug(sprintf "Set %s $name", $self->dz);
+  $self->render(text => "Done.");
 };
 
 get '/:uuid/download/:ext' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/, ext => [qw/zip/]] => sub {
   my $self = shift;
-  my $uuid = $self->param('uuid');
-  my $home = $self->app->home->to_string;
-  my $path = catdir "$home/public/uploads", $uuid;
   if ( $self->param('ext') eq 'zip' ) {
-    #my $zip = zip $path;
+    #my $zip = zip $self->dz->path;
     #return $self->render_file($zip);
   }
   $self->render("Unknown file type");
@@ -133,18 +91,17 @@ post '/:uuid/upload' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]
   return $self->redirect_to('index')
     unless my $file = $self->param('file');
   my $size = $file->size;
-  my $name = $file->filename;
+  my $filename = $file->filename;
 
   # Check file name
   return $self->render(text => 'File name cannot start with .dz-', status => 200)
     if $file->filename =~ /^\.dz-/;
 
-  my $uuid = $self->param('uuid');
-  my $home = $self->app->home->to_string;
-  mkpath "$home/public/uploads/$uuid";
-  $file->move_to("$home/public/uploads/$uuid/$name");
-  $self->app->log->debug("$home/public/uploads/$uuid/$name ($size)");
-  $self->render(text => "Thanks for uploading $size byte file $name.");
+  my $path = $self->dz->path;
+  mkpath $path;
+  $file->move_to($self->dz->file($filename));
+  $self->app->log->debug("$filename ($size)");
+  $self->render(text => "Done.");
 };
 
 app->start;
