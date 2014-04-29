@@ -11,7 +11,8 @@ use List::Util qw(first);
 
 use DZ;
 
-my $host;
+my $index_re = qr/[0-9]+/;
+my $uuid_re = qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
 
 plugin 'RemoteAddr';
 
@@ -19,32 +20,45 @@ helper dz => sub { DZ->new({app => shift}) };
 
 hook before_routes => sub {
   my $c = shift;
-  $host = $c->req->url->to_abs->host;
+  my $host = $c->req->url->to_abs->host;
   my $host_root = $c->app->home."/branded/$host";
   if ( -d $host_root ) {
     unshift @{$c->app->static->paths}, "$host_root/public" unless grep { $_ eq "$host_root/public" } @{$c->app->static->paths};
     unshift @{$c->app->renderer->paths}, "$host_root/templates" unless grep { $_ eq "$host_root/templates" } @{$c->app->renderer->paths};
   }
+  $c->session->{uuid} = [$c->session->{uuid}] if ! ref $c->session->{uuid};
+  #$c->session->{uuid} = [grep { $_ } @{$c->session->{uuid}}];
+  $c->stash(host => $host);
 };
 
-get '/:uuid' => [uuid => qr/[0-9]+|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => {uuid => 0} => sub {
+get '/:uuid' => [uuid => qr/$uuid_re|$index_re/] => {uuid => 0} => sub {
   my $self = shift;
-  $self->stash(host => $host, uuid => $self->dz->uuid, files => [], name => '');
+  $self->dz->uuid or return $self->render_not_found;
+  $self->stash(index => $self->dz->index, uuid => $self->dz->uuid);
+  $self->stash(files => [], name => '');
   my $path = $self->dz->path or die "Path error";
-  $self->app->log->debug("Viewing $host : $path");
+  $self->app->log->debug(sprintf "Viewing %s : %s (%s)", $self->stash('host'), $self->dz->uuid, $self->dz->index);
   if ( -d $path ) {
     opendir(my $dir, $path);
-    $self->stash(files => [grep { !/^\.dz-/ && -f $self->dz->file($_) } readdir $dir], name => $self->dz->repo->name);
+    $self->stash(files => [grep { !/^\.dz-/ && -f $self->dz->file($_) } readdir $dir], name => $self->dz->name);
   }
   return $self->render('filelist') if $self->req->is_xhr;
-} => 'session';
+  return $self->redirect_to('uuid', uuid => $self->dz->index) if $self->param('uuid') =~ $uuid_re;
+};
 
 get '/new' => sub {
   my $self = shift;
-  $self->redirect_to('session', uuid => $self->dz->new_uuid);
+  $self->redirect_to('uuid', uuid => $self->dz->new_uuid);
 };
 
-get '/:uuid/delete' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
+get '/sessions' => sub {
+  my $self = shift;
+  $self->render(json => $self->session->{uuid});
+};
+
+under '/:uuid' => [uuid => $uuid_re];
+
+get '/delete' => [uuid => $uuid_re] => sub {
   my $self = shift;
   my $path = $self->dz->path;
   # rm -rf $path if -d $path;
@@ -52,7 +66,7 @@ get '/:uuid/delete' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{
   $self->render(text => "Done.");
 };
 
-post '/:uuid/delete' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
+post '/delete' => sub {
   my $self = shift;
   my $path = $self->dz->path;
   foreach ( @{$self->req->json} ) {
@@ -64,14 +78,14 @@ post '/:uuid/delete' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]
   $self->render(text => "Done.");
 };
 
-post '/:uuid/name' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
+post '/name' => sub {
   my $self = shift;
   my $name = $self->dz->name($self->param('name'));
   $self->app->log->debug(sprintf "Set %s $name", $self->dz);
   $self->render(text => "Done.");
 };
 
-get '/:uuid/download/:ext' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/, ext => [qw/zip/]] => sub {
+get '/download/:ext' => [ext => [qw/zip/]] => sub {
   my $self = shift;
   if ( $self->param('ext') eq 'zip' ) {
     #my $zip = zip $self->dz->path;
@@ -80,7 +94,7 @@ get '/:uuid/download/:ext' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0
   $self->render("Unknown file type");
 };
 
-post '/:uuid/upload' => [uuid => qr/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/] => sub {
+post '/upload' => sub {
   my $self = shift;
 
   # Check file size
