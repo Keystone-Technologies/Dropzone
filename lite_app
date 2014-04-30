@@ -3,11 +3,7 @@ use Mojolicious::Lite;
 use FindBin;
 BEGIN { unshift @INC, "$FindBin::Bin/lib" }
 
-use Mojo::Util qw/slurp spurt/;
-
-use File::Spec::Functions qw(catdir catfile splitdir);
 use File::Path;
-use List::Util qw(first);
 
 use DZ;
 
@@ -31,7 +27,12 @@ hook before_routes => sub {
   $c->stash(host => $host);
 };
 
-get '/:uuid' => [uuid => qr/$uuid_re|$index_re/] => {uuid => 0} => sub {
+get '/' => sub {
+  my $self = shift;
+  $self->redirect_to('session', uuid => $self->dz->first // $self->dz->new_uuid);
+};
+
+get '/:session' => [session => qr/$uuid_re|$index_re/] => sub {
   my $self = shift;
   $self->dz->uuid or return $self->render_not_found;
   $self->stash(index => $self->dz->index, uuid => $self->dz->uuid);
@@ -43,22 +44,30 @@ get '/:uuid' => [uuid => qr/$uuid_re|$index_re/] => {uuid => 0} => sub {
     $self->stash(files => [grep { !/^\.dz-/ && -f $self->dz->file($_) } readdir $dir], name => $self->dz->name);
   }
   return $self->render('filelist') if $self->req->is_xhr;
-  return $self->redirect_to('uuid', uuid => $self->dz->index) if $self->param('uuid') =~ $uuid_re;
+  return $self->redirect_to('session', session => $self->dz->index) if $self->param('session') =~ $uuid_re;
 };
 
 get '/new' => sub {
   my $self = shift;
-  $self->redirect_to('uuid', uuid => $self->dz->new_uuid);
+  $self->redirect_to('session', session => $self->dz->new_uuid);
 };
 
 get '/sessions' => sub {
   my $self = shift;
-  $self->render(json => $self->session->{uuid});
+  $self->render(json => [$#{$self->session->{uuid}}+1 => $self->session->{uuid}]);
 };
 
 under '/:uuid' => [uuid => $uuid_re];
 
-get '/delete' => [uuid => $uuid_re] => sub {
+get '/forget' => sub {
+  my $self = shift;
+  $self->session->{uuid}->[$self->dz->map($self->param('uuid'))] = undef;
+  # Pop off all undef elements
+  $self->app->log->debug("Forgotten.");
+  $self->render(text => "Done.");
+};
+
+get '/delete' => sub {
   my $self = shift;
   my $path = $self->dz->path;
   # rm -rf $path if -d $path;

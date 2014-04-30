@@ -5,18 +5,18 @@ use overload '""' => sub { shift->_uuid }, fallback => 1;
 
 use Mojo::Log;
 use Mojo::Path;
-use Mojo::Util qw/slurp spurt/;
+use Mojo::Util qw(slurp spurt);
 
-use List::Util qw/first/;
 use UUID::Tiny ':std';
-use File::Spec::Functions qw/catdir catfile/;
+use List::Util qw();
+use File::Spec::Functions qw(catdir catfile);
 
 has uploads => 'public/uploads';
 has app => sub { shift->{app} };
 has log => sub { Mojo::Log->new };
 has _uuid => sub {
   my $self = shift;
-  local $_ = $self->app->param('uuid');
+  local $_ = $self->app->param('session');
   if ( /^[0-9]+$/ ) {
     return $self->map($_);
   } elsif ( /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/) {
@@ -29,6 +29,11 @@ has _uuid => sub {
 has path => sub { Mojo::Path->new(catdir($_[0]->app->app->home, split('/', $_[0]->uploads), $_[0]->uuid)) };
 
 sub new_uuid { uuid_to_string(create_uuid(UUID_V4)) }
+
+sub first {
+  my $self = shift;
+  return (((grep { $self->app->session->{uuid}->[$_] } 0 .. $#{$self->app->session->{uuid}}))[0]);
+}
 
 sub index {
   my $self = shift;
@@ -66,8 +71,8 @@ sub map {
     return $uuid;
   } elsif ( /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/) {
     my ($uuid, $index) = ($_, undef);
-    if ( grep { $uuid eq $_ } @{$self->app->session->{uuid}} ) {
-      $index = first { $self->app->session->{uuid}->[$_] eq $uuid } 0 .. $#{$self->app->session->{uuid}};
+    if ( grep { $_ && $_ eq $uuid } @{$self->app->session->{uuid}} ) {
+      $index = List::Util::first { $self->app->session->{uuid}->[$_] && $self->app->session->{uuid}->[$_] eq $uuid } 0 .. $#{$self->app->session->{uuid}};
     } else {
       push @{$self->app->session->{uuid}}, $uuid;
       $index = $#{$self->app->session->{uuid}};
@@ -79,6 +84,7 @@ sub map {
   }
   return undef;
 }
+
 
 sub name {
   my $self = shift;
