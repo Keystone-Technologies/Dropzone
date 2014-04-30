@@ -29,7 +29,7 @@ hook before_routes => sub {
 
 get '/' => sub {
   my $self = shift;
-  $self->redirect_to('session', uuid => $self->dz->first // $self->dz->new_uuid);
+  $self->redirect_to('session', session => $self->dz->first // $self->dz->new_uuid);
 };
 
 get '/:session' => [session => qr/$uuid_re|$index_re/] => sub {
