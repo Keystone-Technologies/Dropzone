@@ -3,7 +3,7 @@ use Mojolicious::Lite;
 use FindBin;
 BEGIN { unshift @INC, "$FindBin::Bin/lib" }
 
-use File::Path;
+use File::Path qw(make_path);
 
 use DZ;
 
@@ -57,7 +57,7 @@ get '/sessions' => sub {
   $self->render(json => [$#{$self->session->{uuid}}+1 => $self->session->{uuid}]);
 };
 
-under '/:uuid' => [uuid => $uuid_re];
+under '/:uuid' => [uuid => $uuid_re] => sub { shift->dz->uuid };
 
 get '/forget' => sub {
   my $self = shift;
@@ -121,9 +121,9 @@ post '/upload' => sub {
     if $file->filename =~ /^\.dz-/;
 
   my $path = $self->dz->path;
-  mkpath $path;
+  make_path($path);
   $file->move_to($self->dz->file($filename));
-  $self->app->log->debug("$filename ($size)");
+  $self->app->log->debug("$path / $filename ($size)");
   $self->render(text => "Done.");
 };
 

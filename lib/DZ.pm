@@ -16,7 +16,7 @@ has app => sub { shift->{app} };
 has log => sub { Mojo::Log->new };
 has _uuid => sub {
   my $self = shift;
-  local $_ = $self->app->param('session');
+  local $_ = $self->app->param('session') || $self->app->param('uuid');
   if ( /^[0-9]+$/ ) {
     return $self->map($_);
   } elsif ( /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/) {
