@@ -121,10 +121,15 @@ post '/upload' => sub {
     if $file->filename =~ /^\.dz-/;
 
   my $path = $self->dz->path;
-  make_path($path);
-  $file->move_to($self->dz->file($filename));
-  $self->app->log->debug("$path / $filename ($size)");
-  $self->render(text => "Done.");
+  make_path($path, {error => \my $err});
+  if ( @$err ) {
+    warn Data::Dumper::Dumper([@$err]);
+    $self->render_exception("Cannot make path $path");
+  } else {
+    $file->move_to($self->dz->file($filename));
+    $self->app->log->debug("$path / $filename ($size)");
+    $self->render(text => "Done.");
+  }
 };
 
 app->start;
