@@ -61,6 +61,9 @@
                           %= include 'filelist'
                         </div>
                     </div>
+                    <div id="file_list_download_all">
+                      <a href="$.get("<%= url_for 'uuiddownloadext', ext => 'zip', uuid => param 'uuid' %>");">Download All</a>
+                    </div>
                     % if ( stash 'mine' ) {
                       <p><a href="<%= url_for 'uuiddelete', uuid => $uuid %>">delete</a></p>
                     % }
