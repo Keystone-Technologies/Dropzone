@@ -163,3 +163,7 @@ span {
 .ellipsis:hover {
     color: #6c9c31;
 }
+.clipboard {
+  height: 100%;
+  width: auto;
+}
