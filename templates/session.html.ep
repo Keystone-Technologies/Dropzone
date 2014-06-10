@@ -59,7 +59,6 @@
                         <script type="text/javascript">
                           startZclip('j_idt149:0','/js/ZeroClipboard.swf', 'Copy Link', 'Copy Link');
                         </script>
-                      </div>
                       <div class="session_id_hover">
                         <p><a href="$.post("<%= url_for 'uuidname', uuid => param 'uuid' %>", {name: $("#uuidname").val()});">Rename Session</a></p>
                         <div class="clipboard-copy-div btn btn-mini" data-clipboard-text="http://<%= $host %><%= $uuid %>" id="j_idt149:0">Copy Link</div>
