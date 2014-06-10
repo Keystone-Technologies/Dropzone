@@ -106,10 +106,21 @@ span {
     overflow-y: scroll;
     background-color: #aeb0b2;
     align: right;
-    height: 320px;
+    height: 280px;
     border: 1px solid rgba(0,0,0,0.03);
     -webkit-border-radius: 3px;
     border-radius: 3px;
+}
+#file_list_download_all {
+  height: 40px;
+  background-color: #aeb0b2;
+  border: 1px solid rgba(0,0,0,0.03);
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  align: left;
+}
+#file_list_download_all a {
+  margin: 2px;
 }
 #file_list_container p {
     color: #000;
@@ -152,6 +163,7 @@ span {
 .ellipsis:hover {
     color: #6c9c31;
 }
+<<<<<<< HEAD
 #legal {
   text-align: center;
   margin: 0 auto;
@@ -161,4 +173,9 @@ span {
   color: #000;
   padding: 5px;
   font-size: 14px;
+=======
+.clipboard {
+  height: 100%;
+  width: auto;
+>>>>>>> FETCH_HEAD
 }

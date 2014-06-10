@@ -4,7 +4,7 @@
       <div class="ellipsis">
         <a href="/uploads/<%= $uuid %>/<%= $_ %>"><%= $_ %></a>
       </div>
-    <div class="clipboard-copy-div btn btn-mini" data-clipboard-text="http://<%= $host %>/uploads/<%= $uuid %>/<%= $_ %>" id="j_idt149:<%= $cnt %>">Copy Link</div>
+    <div class="clipboard-copy-div btn btn-mini" data-clipboard-text="http://<%= $host %>/uploads/<%= $uuid %>/<%= $_ %>" id="j_idt149:<%= $cnt %>"><img src="img/clipboard.png" alt="Copy Link" class="clipboard"></div>
       <script type="text/javascript">
         startZclip('j_idt149:<%= $cnt %>','/js/ZeroClipboard.swf', 'Copy Link', 'Copy Link');
       </script>
