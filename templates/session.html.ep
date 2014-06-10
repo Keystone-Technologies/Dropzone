@@ -34,25 +34,38 @@
                 }, 3000);
             });
         </script>
+        <script>
+          $(document).ready(function() {
+              $("#box1").mouseenter(function() {
+                  $("#box1-hover").show();
+              }).mouseleave(function() {
+                  $("#box1-hover").hide();
+              });
+          });
+        </script>
     </head>
     <body>
         <div id="wrapper">
             <div id="header">
-                <img src="img/logo.png" alt="Keystone IT" id="logo"/>
+                <img src="img/logo.png" alt="Keystone Technologies" id="logo"/>
                 <h1 id="title">File Upload</h1>
                 <hr id="seperator">
             </div><!-- End Header -->
             <div id="Content">
                 <div id="codeinput">
-                    <div id="session_info">
-                      <p>Your upload session is: <b><a href="/<%= $uuid %>"><%= $name || $uuid %></a></b></p>
-                      <div class="clipboard-copy-div btn btn-mini" data-clipboard-text="http://<%= $host <%= $uuid %>/>" id="j_idt149:<%= $cnt %>">Copy Link</div>
-                        <script type="text/javascript">
-                          startZclip('j_idt149:<%= $cnt %>','/js/ZeroClipboard.swf', 'Copy Link', 'Copy Link');
-                        </script>
+                    <div class="session_info">
+                      <div class="session_id">
+                        <p>Your upload session is: <b><a href="/<%= $uuid %>"><%= $name || $uuid %></a></b></p>
                       </div>
-                      <p><a href="<%= url_for 'new' %>">New Session</a></p>
-                    </div>
+                      <div class="session_id_hover">
+                        <p><a href="$.post("<%= url_for uuidname, uuid => param 'uuid' %>", {name: $("#uuidname").val()});">Rename Session</a></p>
+                        <div class="clipboard-copy-div btn btn-mini" data-clipboard-text="http://<%= $host <%= $uuid %>/>" id="j_idt149:<%= $cnt %>">Copy Link</div>
+                          <script type="text/javascript">
+                            startZclip('j_idt149:<%= $cnt %>','/js/ZeroClipboard.swf', 'Copy Link', 'Copy Link');
+                          </script>
+                        <p><a href="<%= url_for 'new' %>">New Session</a></p>
+                      </div>
+                    </div><!-- End session_info -->
                     <div id="file_upload">
                         <form action="<%= url_for 'upload', uuid => $uuid %>" class="dropzone" id="my-awesome-dropzone"></form>
                     </div>
