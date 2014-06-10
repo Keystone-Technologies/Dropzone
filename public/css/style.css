@@ -51,6 +51,8 @@ p, b {
 }
 #logo {
     float: left;
+    width: 25%;
+    min-width: 250px;
 }
 #title {
     padding-top: 60px;
@@ -163,7 +165,6 @@ span {
 .ellipsis:hover {
     color: #6c9c31;
 }
-<<<<<<< HEAD
 #legal {
   text-align: center;
   margin: 0 auto;
@@ -173,9 +174,30 @@ span {
   color: #000;
   padding: 5px;
   font-size: 14px;
-=======
+}
 .clipboard {
   height: 100%;
   width: auto;
->>>>>>> FETCH_HEAD
+}
+.session_info {
+
+}
+.session_id {
+
+}
+.session_id_hover {
+  display: none;
+}
+
+#box1 {
+    z-index: 2;
+    float: left;
+    position: relative;
+}
+
+#box1-hover {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 1;
 }
