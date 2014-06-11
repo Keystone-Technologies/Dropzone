@@ -34,7 +34,7 @@ body {
 }
  div, li, h1, h2, h3, h4, td, input, select, textarea {
     font-size: 38px;
-    color: #6c9c31;
+    color: #6ea041;
 }
 p, b {
     font-size: 16px;
@@ -44,15 +44,17 @@ p, b {
     width: 65%;
     min-width: 620px;
     margin: 0 auto;
-    align: center;
+
 }
 #header {
-    padding-top: 6vh;
+    padding-top: 12vh;
+    overflow: hidden;
+    padding-top: 5%;
 }
 #logo {
     float: left;
-    width: 25%;
-    min-width: 250px;
+    width: 100%
+    height: auto;
 }
 #title {
     padding-top: 60px;
@@ -83,13 +85,16 @@ p, b {
 }
 a {
     text-decoration: none;
-    color: #6c9c31;
+    color: #6ea041;
 }
 a:hover {
     color: #000;
 }
 span {
     font-size: 18px;
+}
+#file_upload span {
+    font-size: 12px;
 }
 #codeinput p {
     margin-bottom: 10px;
@@ -100,34 +105,51 @@ span {
     width: 65%;
     height: 360px;
 }
+.dz-size {
+  font-size: 18px;
+  color: #000;
+}
 #file_list_container {
     display: inline-block;
     width: 32%;
+    vertical-align: top;
 }
 #file_list {
     overflow-y: scroll;
     background-color: #aeb0b2;
     align: right;
-    height: 280px;
+    height: 285px;
     border: 1px solid rgba(0,0,0,0.03);
     -webkit-border-radius: 3px;
     border-radius: 3px;
 }
 #file_list_download_all {
-  height: 40px;
+  height: 30px;
   background-color: #aeb0b2;
+  background-color: #6ea041;
   border: 1px solid rgba(0,0,0,0.03);
   -webkit-border-radius: 3px;
   border-radius: 3px;
 }
-#file_list_download_all a {
-  margin: 2px;
+#file_list_download_all {
+  margin-top: 12px;
+}
+a #file_list_download_all p {
+  font-size: 20px;
+  color: #FFF;
+  margin-top: 5px;
+}
+a:hover #file_list_download_all {
+  background-color: #000;
+}
+a:hover {
+  text-decoration: none;
 }
 #file_list_container p {
     color: #000;
     font-weight: bold;
     font-size: 28px;
-    padding: 5px 0;
+    padding: 0 0 0 12px;
 }
 .file_row {
     width: 100%;
@@ -144,7 +166,7 @@ span {
     font-style: italic;
 }
 .file_row a:hover {
-    color: #6c9c31;
+    color: #6ea041;
 }
 .btn {
     display: inline;
@@ -162,7 +184,7 @@ span {
     color: #313131;
 }
 .ellipsis:hover {
-    color: #6c9c31;
+    color: #6ea041;
 }
 #legal {
   text-align: center;
@@ -171,7 +193,7 @@ span {
 #legal a {
   align: center;
   color: #000;
-  padding: 5px;
+  padding: 15px;
   font-size: 14px;
 }
 .clipboard {
@@ -186,17 +208,4 @@ span {
 }
 .session_id_hover {
   display: none;
-}
-
-#box1 {
-    z-index: 2;
-    float: left;
-    position: relative;
-}
-
-#box1-hover {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    z-index: 1;
 }
