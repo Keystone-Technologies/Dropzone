@@ -1,8 +1,10 @@
 use Mojolicious::Lite;
 
 use FindBin;
-BEGIN { unshift @INC, "$FindBin::Bin/lib" }
-
+BEGIN {
+  unshift @INC, "$FindBin::Bin/lib";
+  $ENV{MOJO_MAX_MESSAGE_SIZE} = 2 * 1024 * 1024 * 1024; # 2 GB
+};
 use File::Path qw(make_path);
 
 use DZ;
