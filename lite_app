@@ -4,6 +4,7 @@ use FindBin;
 BEGIN {
   unshift @INC, "$FindBin::Bin/lib";
   $ENV{MOJO_MAX_MESSAGE_SIZE} = 2 * 1024 * 1024 * 1024; # 2 GB
+  # Also set "client_max_body_size 2G;" in nginx config files
 };
 use File::Path qw(make_path);
 
